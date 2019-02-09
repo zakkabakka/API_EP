@@ -4,7 +4,8 @@ const models = require('../models');
 const User = models.User;
 const middleware = require('../middlewares/registerRequest');
 
-router.post('/', middleware.registerCheck, function(req, res) {
+router.post('/', function(req, res) {
+    //console.log(req.body);
     User.create({
         firstname: req.body.firstname,
         lastname: req.body.lastname,
@@ -20,8 +21,10 @@ router.post('/', middleware.registerCheck, function(req, res) {
         city: req.body.city
     }).then(function(CreatedUser){
         res.status(201).send({message: "User successfully created"});
+        return
     }, function(error) {
-        res.status(400).send({message: "An error occurred"}); // Error!
+        res.status(400).send({message: "An error occurred"});
+        return
     });
 });
 

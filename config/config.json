@@ -1,10 +1,10 @@
 {
   "development": {
-    "username": "root",
-    "password": "root",
-    "database": "FPermis",
-    "host": "localhost",
-    "port": "3306",
+    "username": "kherfi_permis",
+    "password": "Permis123*/",
+    "database": "kherfi_permis",
+    "host": "109.234.162.74",
+    "port": "2082",
     "dialect": "mysql"
   },
   "test": {

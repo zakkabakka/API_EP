@@ -6,6 +6,27 @@ const User = models.User;
 const middleware = require('../middlewares/authRequest');
 const Appointment = models.Appointment;
 
+
+
+router.get('/all/accompanist', function(req, res) {
+    var user = req.session.user;
+
+    User.findAndCountAll({
+        where: {
+            role: "accompanist"
+        }
+    }).then(function(apt, err) {
+        if (err) {
+            res.status(500).send("error");
+        }
+        if (apt) {
+            res.status(200).send(apt.rows);
+        }
+    });
+});
+
+// ///////////////////////////
+
 router.put('/me/update', middleware.isAccompanist, function(req,res) {
     var user = req.session.user;
     User.update({
@@ -68,7 +89,7 @@ router.get('/', middleware.isAccompanist, function (req, res) {
     });
 });
 
-router.get('/:id/schedule', middleware.isStudent, function (req, res) {
+router.get('/:id/schedule', function (req, res) {
     Schedule.sync().then(function(){
         Schedule.findAndCountAll({
             where: {
@@ -100,6 +121,22 @@ router.get('/:id/schedule', middleware.isStudent, function (req, res) {
     });
 });
 
+router.get('/my/course', middleware.isStudent, function(req, res) {
+    var user = req.session.user;
+
+    Appointment.findAndCountAll({
+        where: {
+            student_id: user.id
+        }
+    }).then(function(apt, err) {
+        if (err) {
+            res.status(500).send("error");
+        }
+        if (apt) {
+            res.status(200).send(apt.rows);
+        }
+    });
+});
 
 router.get('/my/course/:status', middleware.isAccompanist, function(req, res) {
     var user = req.session.user;
@@ -119,22 +156,6 @@ router.get('/my/course/:status', middleware.isAccompanist, function(req, res) {
     });
 });
 
-router.get('/my/course', middleware.isStudent, function(req, res) {
-    var user = req.session.user;
-
-    Appointment.findAndCountAll({
-        where: {
-            student_id: user.id
-        }
-    }).then(function(apt, err) {
-        if (err) {
-            res.status(500).send("error");
-        }
-        if (apt) {
-            res.status(200).send(apt.rows);
-        }
-    });
-});
 
 router.get('/:id/infos', middleware.isStudent, function(req, res) {
    User.find({

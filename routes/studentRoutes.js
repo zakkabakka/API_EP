@@ -22,6 +22,30 @@ router.put('/me/update', middleware.isStudent, function(req,res) {
     })
 });
 
+
+// //////////////////////////
+
+router.get('/all/student', function(req, res) {
+    var user = req.session.user;
+
+    User.findAndCountAll({
+        where: {
+            role: "student"
+        }
+    }).then(function(apt, err) {
+        if (err) {
+            res.status(500).send("error");
+        }
+        if (apt) {
+            res.status(200).send(apt.rows);
+        }
+    });
+});
+
+// ///////////////////////////
+
+
+
 router.get('/find/accompanist', middleware.isStudent, function(req,res) {
     User.findAndCountAll({
         where: {
@@ -41,10 +65,11 @@ router.get('/find/accompanist', middleware.isStudent, function(req,res) {
                     i++;
                     if (error) {
                         console.log('--- error:');
-                        console.log(error);            // error encountered
+                        console.log(error); 
                     } else {
-                        var data = JSON.parse(body).places[0];
-
+                        var data = JSON.parse(body);
+                        var places = data.places;
+                        console.log(data);
                         var obj = {
                             id: val.id,
                             price: val.price,
@@ -52,6 +77,7 @@ router.get('/find/accompanist', middleware.isStudent, function(req,res) {
                             longitude: data.longitude
                         };
                         array.push(obj);
+
                         if (i == user.rows.length) {
                             return res.status(200).send(array);
                         }
